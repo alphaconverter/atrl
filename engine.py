@@ -40,7 +40,7 @@ def main():
     player = Entity(int(screen_width / 2), int(screen_height / 2), '@', libtcod.dark_blue, 'Player', blocks=True, render_order=RenderOrder.ACTOR, fighter=fighter_component)
     entities = [player]
 
-    libtcod.console_set_custom_font('dejavu32x32_gs_tc_scaled.png', libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_TCOD)
+    libtcod.console_set_custom_font('dejavu16x16_gs_tc.png', libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_TCOD)
 
     libtcod.console_init_root(screen_width, screen_height, 'Rltut', False)
 
