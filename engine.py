@@ -42,7 +42,7 @@ def main():
 
     libtcod.console_set_custom_font('dejavu16x16_gs_tc.png', libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_TCOD)
 
-    libtcod.console_init_root(screen_width, screen_height, 'Rltut', False)
+    libtcod.console_init_root(screen_width, screen_height, 'ATRL: A Tiny RogueLike', False)
 
     con = libtcod.console_new(screen_width, screen_height)
 
