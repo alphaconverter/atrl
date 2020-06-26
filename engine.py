@@ -30,14 +30,14 @@ def main():
     max_monsters_per_room = 3
 
     colors = {
-        'dark_wall': libtcod.Color(0, 0, 100),
-        'dark_ground': libtcod.Color(50, 50, 150),
-        'light_wall': libtcod.Color(130, 110, 50),
-        'light_ground': libtcod.Color(200, 180, 50),
+        'dark_wall': libtcod.Color(100, 50, 0),
+        'dark_ground': libtcod.Color(150, 150, 150),
+        'light_wall': libtcod.Color(150, 100, 50),
+        'light_ground': libtcod.Color(200, 200, 200),
     }
 
     fighter_component = Fighter(hp=30, defense=2, power=5)
-    player = Entity(int(screen_width / 2), int(screen_height / 2), '@', libtcod.white, 'Player', blocks=True, render_order=RenderOrder.ACTOR, fighter=fighter_component)
+    player = Entity(int(screen_width / 2), int(screen_height / 2), '@', libtcod.dark_blue, 'Player', blocks=True, render_order=RenderOrder.ACTOR, fighter=fighter_component)
     entities = [player]
 
     libtcod.console_set_custom_font('dejavu32x32_gs_tc_scaled.png', libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_TCOD)
