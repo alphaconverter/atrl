@@ -13,13 +13,13 @@ def handle_keys(key):
     elif key.vk == libtcod.KEY_RIGHT or key_char == 'l':
         return {'move': (1, 0)}
     elif key_char == 'y':
-        return {'moe': (-1, -1)}
+        return {'move': (-1, -1)}
     elif key_char == 'u':
-        return {'moe': (1, -1)}
+        return {'move': (1, -1)}
     elif key_char == 'b':
-        return {'moe': (-1, 1)}
+        return {'move': (-1, 1)}
     elif key_char == 'n':
-        return {'moe': (1, 1)}
+        return {'move': (1, 1)}
 
     if key.vk == libtcod.KEY_ENTER and key.lalt:
         # Alt+Enter: toggle full screen
