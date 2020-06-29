@@ -70,14 +70,14 @@ def get_constants():
     return constants
 
 def get_game_variables(constants):
-    fighter_component = Fighter(hp=30, defense=2, power=5)
+    fighter_component = Fighter(hp=100, defense=1, power=4)
     inventory_component = Inventory(20)
     level_component = Level()
     player = Entity(0, 0, '@', libtcod.dark_blue, 'Player', blocks=True, render_order=RenderOrder.ACTOR, fighter=fighter_component, inventory=inventory_component, level=level_component)
     entities = [player]
 
     game_map = GameMap(constants['map_width'], constants['map_height'])
-    game_map.make_map(constants['max_rooms'], constants['room_min_size'], constants['room_max_size'], constants['map_width'], constants['map_height'], player, entities, constants['max_monsters_per_room'], constants['max_items_per_room'])
+    game_map.make_map(constants['max_rooms'], constants['room_min_size'], constants['room_max_size'], constants['map_width'], constants['map_height'], player, entities)
 
     message_log = MessageLog(constants['message_x'], constants['message_width'], constants['message_height'])
 
