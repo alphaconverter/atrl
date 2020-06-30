@@ -245,8 +245,8 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
 def main():
     constants = get_constants()
 
-    libtcod.console_set_custom_font('dejavu16x16_gs_tc.png', libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_TCOD)
-    libtcod.console_init_root(constants['screen_width'], constants['screen_height'], constants['window_title'], False)
+    libtcod.console_set_custom_font('font.png', libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_CP437)
+    libtcod.console_init_root(constants['screen_width'], constants['screen_height'], constants['window_title'], True)
 
     con = libtcod.console_new(constants['screen_width'], constants['screen_height'])
     panel = libtcod.console_new(constants['screen_width'], constants['panel_height'])

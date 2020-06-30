@@ -41,10 +41,12 @@ def get_constants():
     max_items_per_room = 2
 
     colors = {
-        'dark_wall': libtcod.Color(100, 50, 0),
-        'dark_ground': libtcod.Color(150, 150, 150),
-        'light_wall': libtcod.Color(150, 100, 50),
+        'light_wall': libtcod.Color(180, 130, 80),
+        'light_wall_bg': libtcod.Color(130, 80, 30),
+        'dark_wall': libtcod.Color(130, 80, 30),
+        'dark_wall_bg': libtcod.Color(80, 30, 0),
         'light_ground': libtcod.Color(200, 200, 200),
+        'dark_ground': libtcod.Color(100, 100, 100),
     }
 
     constants = {
@@ -77,7 +79,7 @@ def get_game_variables(constants):
     inventory_component = Inventory(20)
     level_component = Level()
     equipment_component = Equipment()
-    player = Entity(0, 0, '@', libtcod.dark_blue, 'Player', blocks=True, render_order=RenderOrder.ACTOR, fighter=fighter_component, inventory=inventory_component, level=level_component, equipment=equipment_component)
+    player = Entity(0, 0, 2, libtcod.dark_blue, 'Player', blocks=True, render_order=RenderOrder.ACTOR, fighter=fighter_component, inventory=inventory_component, level=level_component, equipment=equipment_component)
     entities = [player]
 
     equippable_component = Equippable(EquipmentSlots.MAIN_HAND, power_bonus=2)

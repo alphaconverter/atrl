@@ -40,13 +40,17 @@ def render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, m
 
                 if visible:
                     if wall:
-                        libtcod.console_set_char_background(con, x, y, colors.get('light_wall'), libtcod.BKGND_SET)
+                        libtcod.console_set_default_foreground(con, colors.get('light_wall'))
+                        libtcod.console_put_char(con, x, y, '#', libtcod.BKGND_NONE)
+                        libtcod.console_set_char_background(con, x, y, colors.get('light_wall_bg'), libtcod.BKGND_SET)
                     else:
                         libtcod.console_set_char_background(con, x, y, colors.get('light_ground'), libtcod.BKGND_SET)
                     game_map.tiles[x][y].explored = True
                 elif game_map.tiles[x][y].explored:
                     if wall:
-                        libtcod.console_set_char_background(con, x, y, colors.get('dark_wall'), libtcod.BKGND_SET)
+                        libtcod.console_set_default_foreground(con, colors.get('dark_wall'))
+                        libtcod.console_put_char(con, x, y, '#', libtcod.BKGND_NONE)
+                        libtcod.console_set_char_background(con, x, y, colors.get('dark_wall_bg'), libtcod.BKGND_SET)
                     else:
                         libtcod.console_set_char_background(con, x, y, colors.get('dark_ground'), libtcod.BKGND_SET)
 
