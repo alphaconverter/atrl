@@ -16,4 +16,5 @@ return it to the surface.
 
 # License
 
-MIT
+MIT (code), CC0 (tiles)
+
