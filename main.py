@@ -1,6 +1,8 @@
 import tcod as libtcod
+import warnings
+import sys
 
-import warnings # disable deprecation warnings ... (see also newer tutorial)
+sys.path.append('game')
 
 from entity import get_blocking_entities_at_location
 from input_handlers import handle_keys, handle_mouse, handle_main_menu
@@ -13,6 +15,7 @@ from menus import main_menu, message_box
 from render_functions import render_all
 from fov_functions import initialize_fov, recompute_fov
 
+import warnings # disable deprecation warnings
 warnings.simplefilter("ignore")
 
 def play_game(player, entities, game_map, message_log, game_state, con, panel, constants):
@@ -243,7 +246,7 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
 def main():
     constants = get_constants()
 
-    libtcod.console_set_custom_font('tiles.png', libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_CP437, 16, 24)
+    libtcod.console_set_custom_font('res/tiles.png', libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_CP437, 16, 24)
     libtcod.console_init_root(constants['screen_width'], constants['screen_height'], constants['window_title'], True)
 
     con = libtcod.console_new(constants['screen_width'], constants['screen_height'])
