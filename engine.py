@@ -10,7 +10,7 @@ from death_functions import kill_monster, kill_player
 from loader_functions.initialize_new_game import get_constants, get_game_variables
 from loader_functions.data_loaders import load_game, save_game
 from menus import main_menu, message_box
-from render_functions import clear_all, render_all
+from render_functions import render_all
 from fov_functions import initialize_fov, recompute_fov
 
 warnings.simplefilter("ignore")
@@ -32,12 +32,10 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
         if fov_recompute:
             recompute_fov(fov_map, player.x, player.y, constants['fov_radius'], constants['fov_light_walls'], constants['fov_algorithm'])
 
-        render_all(con, panel, entities, player, game_map, fov_map, fov_recompute, message_log, constants['screen_width'], constants['screen_height'], constants['bar_width'], constants['panel_height'], constants['panel_y'], mouse, constants['colors'], game_state)
+        render_all(con,panel,entities,player,game_map,fov_map,message_log,constants['screen_width'],constants['screen_height'],constants['bar_width'],constants['panel_height'],constants['panel_y'],mouse,constants['colors'],game_state)
         fov_recompute = False
 
         libtcod.console_flush()
-
-        clear_all(con, entities)
 
         action = handle_keys(key, game_state)
         mouse_action = handle_mouse(mouse)
@@ -245,11 +243,17 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
 def main():
     constants = get_constants()
 
-    libtcod.console_set_custom_font('font.png', libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_CP437)
+    libtcod.console_set_custom_font('tiles.png', libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_CP437, 16, 24)
     libtcod.console_init_root(constants['screen_width'], constants['screen_height'], constants['window_title'], True)
 
     con = libtcod.console_new(constants['screen_width'], constants['screen_height'])
     panel = libtcod.console_new(constants['screen_width'], constants['panel_height'])
+
+    # load tiles
+    idx = 256
+    for y in range(16, 24):
+        libtcod.console_map_ascii_codes_to_font(idx, 16, 0, y)
+        idx += 16
 
     player = None
     entities = []
