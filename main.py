@@ -1,6 +1,7 @@
 import tcod as libtcod
 import warnings
 import sys
+import time
 
 sys.path.append('game')
 
@@ -29,8 +30,12 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
     previous_game_state = game_state
     targeting_item = None
 
+    MAX_DELTA = 0.01
+    last_tick = time.time()
     while not libtcod.console_is_window_closed():
-        libtcod.sys_check_for_event(libtcod.EVENT_KEY_PRESS | libtcod.EVENT_MOUSE, key, mouse)
+        tick = time.time()
+        delta = tick - last_tick
+        last_tick = tick
 
         if fov_recompute:
             recompute_fov(fov_map, player.x, player.y, constants['fov_radius'], constants['fov_light_walls'], constants['fov_algorithm'])
@@ -39,6 +44,13 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
         fov_recompute = False
 
         libtcod.console_flush()
+
+        if delta < MAX_DELTA:
+            time.sleep(MAX_DELTA - delta)
+
+        #NOTE: we may not be rescheduled *exactly* after (MAX_DELTA - delta) seconds, but we do not care :p
+
+        libtcod.sys_check_for_event(libtcod.EVENT_KEY_PRESS | libtcod.EVENT_MOUSE, key, mouse)
 
         action = handle_keys(key, game_state)
         mouse_action = handle_mouse(mouse)
@@ -272,8 +284,15 @@ def main():
     key = libtcod.Key()
     mouse = libtcod.Mouse()
 
+    MAX_DELTA = 0.01
+    last_tick = time.time()
     while not libtcod.console_is_window_closed():
-        libtcod.sys_check_for_event(libtcod.EVENT_KEY_PRESS | libtcod.EVENT_MOUSE, key, mouse)
+        tick = time.time()
+        delta = tick - last_tick
+        last_tick = tick
+
+        if delta < MAX_DELTA:
+            time.sleep(MAX_DELTA - delta)
 
         if show_main_menu:
             main_menu(con, main_menu_bg_image, constants['screen_width'], constants['screen_height'])
@@ -282,6 +301,8 @@ def main():
                 message_box(con, 'No save game to load', 32, constants['screen_width'], constants['screen_height'])
 
             libtcod.console_flush()
+
+            libtcod.sys_check_for_event(libtcod.EVENT_KEY_PRESS | libtcod.EVENT_MOUSE, key, mouse)
 
             action = handle_main_menu(key)
 
