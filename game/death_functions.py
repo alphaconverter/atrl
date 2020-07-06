@@ -7,10 +7,10 @@ from loader_functions.tiles import *
 
 def kill_player(player):
     player.char = CORPSE
-    return Message('You died!', libtcod.red), GameStates.PLAYER_DEAD
+    return Message('You died!', libtcod.Color(235,86,75)), GameStates.PLAYER_DEAD
 
 def kill_monster(monster):
-    death_message = Message('{0} is dead!'.format(monster.name.capitalize()), libtcod.orange)
+    death_message = Message('{0} is dead!'.format(monster.name.capitalize()), libtcod.Color(235,86,75))
 
     monster.char = CORPSE
     monster.blocks = False

@@ -19,12 +19,11 @@ def get_constants():
     screen_width = 64
     screen_height = 36
 
-    bar_width = 20
     panel_height = 7
     panel_y = screen_height - panel_height
 
-    message_x = bar_width + 2
-    message_width = screen_width - bar_width - 2
+    message_x = 20
+    message_width = screen_width - message_x
     message_height = panel_height - 1
 
     map_width = screen_width
@@ -45,7 +44,6 @@ def get_constants():
         'window_title': window_title,
         'screen_width': screen_width,
         'screen_height': screen_height,
-        'bar_width': bar_width,
         'panel_height': panel_height,
         'panel_y': panel_y,
         'message_x': message_x,
@@ -70,11 +68,11 @@ def get_game_variables(constants):
     inventory_component = Inventory(20)
     level_component = Level()
     equipment_component = Equipment()
-    player = Entity(0, 0, PLAYER, libtcod.dark_blue, 'Player', blocks=True, render_order=RenderOrder.ACTOR, fighter=fighter_component, inventory=inventory_component, level=level_component, equipment=equipment_component)
+    player = Entity(0, 0, PLAYER, 'Player', blocks=True, render_order=RenderOrder.ACTOR, fighter=fighter_component, inventory=inventory_component, level=level_component, equipment=equipment_component)
     entities = [player]
 
     equippable_component = Equippable(EquipmentSlots.MAIN_HAND, power_bonus=2)
-    axe = Entity(0, 0, AXE, libtcod.sky, 'Axe', equippable=equippable_component)
+    axe = Entity(0, 0, AXE, 'Axe', equippable=equippable_component)
     player.inventory.add_item(axe)
     player.equipment.toggle_equip(axe)
 

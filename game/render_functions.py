@@ -19,20 +19,28 @@ def get_names_under_mouse(mouse, entities, fov_map):
 
     return names.capitalize()
 
-def render_bar(panel, x, y, total_width, name, value, maximum, bar_color, back_color):
-    bar_width = int(float(value) / maximum * total_width)
+def render_health(panel, x, y, name, value, maximum, good_color, ok_color, bad_color):
+#TODO: heart
+    default_color = libtcod.Color(194,194,209)
+    libtcod.console_set_default_foreground(panel, default_color)
+    libtcod.console_put_char(panel, x, y, HEART, libtcod.BKGND_NONE)
 
-    libtcod.console_set_default_background(panel, back_color)
-    libtcod.console_rect(panel, x, y, total_width, 1, False, libtcod.BKGND_SCREEN)
+    val_length = len(str(value))
 
-    libtcod.console_set_default_background(panel, bar_color)
-    if bar_width > 0:
-        libtcod.console_rect(panel, x, y, bar_width, 1, False, libtcod.BKGND_SCREEN)
+    if value / float(maximum) > 0.75:
+        color = good_color
+    elif value / float(maximum) > 0.25:
+        color = ok_color
+    else:
+        color = bad_color
 
-    libtcod.console_set_default_foreground(panel, libtcod.white)
-    libtcod.console_print_ex(panel, int(x + total_width / 2), y, libtcod.BKGND_NONE, libtcod.CENTER, '{0}: {1}/{2}'.format(name, value, maximum))
+    libtcod.console_set_default_foreground(panel, color)
 
-def render_all(con, panel, entities, player, game_map, fov_map, message_log, screen_width, screen_height, bar_width, panel_height, panel_y, mouse, game_state):
+    libtcod.console_print_ex(panel, x + 1, y, libtcod.BKGND_NONE, libtcod.LEFT, '{:4}'.format(value))
+    libtcod.console_set_default_foreground(panel, default_color)
+    libtcod.console_print_ex(panel, x + 5, y, libtcod.BKGND_NONE, libtcod.LEFT, '/{}'.format(maximum))
+
+def render_all(con, panel, entities, player, game_map, fov_map, message_log, screen_width, screen_height, panel_height, panel_y, mouse, game_state):
     for y in range(game_map.height):
         for x in range(game_map.width):
             visible = libtcod.map_is_in_fov(fov_map, x, y)
@@ -67,11 +75,11 @@ def render_all(con, panel, entities, player, game_map, fov_map, message_log, scr
         libtcod.console_print_ex(panel, message_log.x, y, libtcod.BKGND_NONE, libtcod.LEFT, message.text)
         y += 1
 
-    render_bar(panel, 1, 1, bar_width, 'HP', player.fighter.hp, player.fighter.max_hp, libtcod.light_red, libtcod.darker_red)
+    render_health(panel, 1, 2, 'HP', player.fighter.hp, player.fighter.max_hp, libtcod.Color(60,163,112), libtcod.Color(242,166,94), libtcod.Color(235,86,75))
 
-    libtcod.console_print_ex(panel, 1, 3, libtcod.BKGND_NONE, libtcod.LEFT, 'Dungeon level: {0}'.format(game_map.dungeon_level))
+    libtcod.console_print_ex(panel, 1, 4, libtcod.BKGND_NONE, libtcod.LEFT, 'Dungeon Level: {0}'.format(game_map.dungeon_level))
 
-    libtcod.console_set_default_foreground(panel, libtcod.light_gray)
+    libtcod.console_set_default_foreground(panel, libtcod.Color(126,126,143))
     libtcod.console_print_ex(panel, 1, 0, libtcod.BKGND_NONE, libtcod.LEFT, get_names_under_mouse(mouse, entities, fov_map))
 
     libtcod.console_blit(panel, 0, 0, screen_width, panel_height, 0, 0, panel_y)

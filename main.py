@@ -40,7 +40,7 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
         if fov_recompute:
             recompute_fov(fov_map, player.x, player.y, constants['fov_radius'], constants['fov_light_walls'], constants['fov_algorithm'])
 
-        render_all(con,panel,entities, player, game_map, fov_map, message_log, constants['screen_width'], constants['screen_height'], constants['bar_width'], constants['panel_height'], constants['panel_y'], mouse, game_state)
+        render_all(con,panel,entities, player, game_map, fov_map, message_log, constants['screen_width'], constants['screen_height'], constants['panel_height'], constants['panel_y'], mouse, game_state)
         fov_recompute = False
 
         libtcod.console_flush()
@@ -96,7 +96,7 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
                     player_turn_results.extend(pickup_results)
                     break
             else:
-                message_log.add_message(Message('There is nothing here to pick up.', libtcod.yellow))
+                message_log.add_message(Message('There is nothing here to pick up.', libtcod.Color(255, 228, 120)))
 
         if show_inventory:
             previous_game_state = game_state
@@ -122,7 +122,7 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
                     libtcod.console_clear(con)
                     break
             else:
-                message_log.add_message(Message('There are no stairs here.', libtcod.yellow))
+                message_log.add_message(Message('There are no stairs here.', libtcod.Color(255, 228, 120)))
 
         if level_up:
             if level_up == 'hp':
@@ -182,7 +182,7 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
                 message_log.add_message(Message('You gain {0} experience points.'.format(xp)))
 
                 if leveled_up:
-                    message_log.add_message(Message('Your battle skills grow stronger! You reached level {0}'.format(player.level.current_level) + '!', libtcod.yellow))
+                    message_log.add_message(Message('Your battle skills grow stronger! You reached level {0}'.format(player.level.current_level) + '!', libtcod.Color(255, 228, 120)))
                     previous_game_state = game_state
                     game_state = GameStates.LEVEL_UP
 
