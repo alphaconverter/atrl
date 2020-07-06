@@ -2,7 +2,7 @@
 
 ATRL (A Tiny RogueLike) is a tiny roguelike written in Python using libtcod.
 
-![Screenshot](imgs/screenshot.png)
+![Screenshot](imgs/screenshot2.png)
 
 # Usage
 
