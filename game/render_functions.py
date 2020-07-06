@@ -79,7 +79,7 @@ def render_all(con, panel, entities, player, game_map, fov_map, message_log, scr
 
     render_health(panel, 1, 2, 'HP', player.fighter.hp, player.fighter.max_hp, libtcod.Color(60,163,112), libtcod.Color(242,166,94), libtcod.Color(235,86,75))
 
-    libtcod.console_print_ex(panel, 1, 4, libtcod.BKGND_NONE, libtcod.LEFT, 'Dungeon Level: {0}'.format(game_map.dungeon_level))
+    libtcod.console_print_ex(panel, 1, 4, libtcod.BKGND_NONE, libtcod.LEFT, 'Floor: {0}'.format(-game_map.dungeon_level))
 
     libtcod.console_set_default_foreground(panel, libtcod.Color(126,126,143))
     libtcod.console_print_ex(panel, 1, 0, libtcod.BKGND_NONE, libtcod.LEFT, get_names_under_mouse(mouse, entities, fov_map))
