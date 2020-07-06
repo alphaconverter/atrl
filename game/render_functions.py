@@ -20,8 +20,7 @@ def get_names_under_mouse(mouse, entities, fov_map):
     return names.capitalize()
 
 def render_health(panel, x, y, name, value, maximum, good_color, ok_color, bad_color):
-#TODO: heart
-    default_color = libtcod.Color(194,194,209)
+    default_color = libtcod.white
     libtcod.console_set_default_foreground(panel, default_color)
     libtcod.console_put_char(panel, x, y, HEART, libtcod.BKGND_NONE)
 
@@ -38,7 +37,10 @@ def render_health(panel, x, y, name, value, maximum, good_color, ok_color, bad_c
 
     libtcod.console_print_ex(panel, x + 1, y, libtcod.BKGND_NONE, libtcod.LEFT, '{:4}'.format(value))
     libtcod.console_set_default_foreground(panel, default_color)
-    libtcod.console_print_ex(panel, x + 5, y, libtcod.BKGND_NONE, libtcod.LEFT, '/{}'.format(maximum))
+    libtcod.console_print_ex(panel, x + 5, y, libtcod.BKGND_NONE, libtcod.LEFT, '/')
+    libtcod.console_set_default_foreground(panel, libtcod.Color(100,118,232))
+    libtcod.console_print_ex(panel, x + 6, y, libtcod.BKGND_NONE, libtcod.LEFT, '{}'.format(maximum))
+    libtcod.console_set_default_foreground(panel, default_color)
 
 def render_all(con, panel, entities, player, game_map, fov_map, message_log, screen_width, screen_height, panel_height, panel_y, mouse, game_state):
     for y in range(game_map.height):
