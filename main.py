@@ -40,7 +40,7 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
         if fov_recompute:
             recompute_fov(fov_map, player.x, player.y, constants['fov_radius'], constants['fov_light_walls'], constants['fov_algorithm'])
 
-        render_all(con,panel,entities,player,game_map,fov_map,message_log,constants['screen_width'],constants['screen_height'],constants['bar_width'],constants['panel_height'],constants['panel_y'],mouse,constants['colors'],game_state)
+        render_all(con,panel,entities, player, game_map, fov_map, message_log, constants['screen_width'], constants['screen_height'], constants['bar_width'], constants['panel_height'], constants['panel_y'], mouse, game_state)
         fov_recompute = False
 
         libtcod.console_flush()

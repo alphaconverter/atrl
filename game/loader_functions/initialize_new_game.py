@@ -41,15 +41,6 @@ def get_constants():
     max_monsters_per_room = 3
     max_items_per_room = 2
 
-    colors = {
-        'light_wall': libtcod.Color(180, 130, 80),
-        'light_wall_bg': libtcod.Color(130, 80, 30),
-        'dark_wall': libtcod.Color(130, 80, 30),
-        'dark_wall_bg': libtcod.Color(80, 30, 0),
-        'light_ground': libtcod.Color(200, 200, 200),
-        'dark_ground': libtcod.Color(100, 100, 100),
-    }
-
     constants = {
         'window_title': window_title,
         'screen_width': screen_width,
@@ -70,7 +61,6 @@ def get_constants():
         'fov_radius': fov_radius,
         'max_monsters_per_room': max_monsters_per_room,
         'max_items_per_room': max_items_per_room,
-        'colors': colors
     }
 
     return constants
