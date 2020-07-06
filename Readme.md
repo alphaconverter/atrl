@@ -9,7 +9,7 @@ ATRL (A Tiny RogueLike) is a tiny roguelike written in Python using libtcod.
 You need Python and the libtcod library. The game is started using the following
 command:
 
-    $ python engine.py
+    $ python main.py
 
 Your goal is to go to dungeon floor 8, find the famous "Amulet of Oderny" and
 return it to the surface.
