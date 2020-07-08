@@ -6,13 +6,13 @@ from render_functions import RenderOrder
 from loader_functions.tiles import *
 
 def kill_player(player):
-    player.char = CORPSE
+    player.tiles = [CORPSE]
     return Message('You died!', libtcod.Color(235,86,75)), GameStates.PLAYER_DEAD
 
 def kill_monster(monster):
     death_message = Message('{0} is dead!'.format(monster.name.capitalize()), libtcod.Color(235,86,75))
 
-    monster.char = CORPSE
+    monster.tiles = [CORPSE]
     monster.blocks = False
     monster.fighter = None
     monster.ai = None

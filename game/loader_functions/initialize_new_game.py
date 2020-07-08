@@ -40,6 +40,10 @@ def get_constants():
     max_monsters_per_room = 3
     max_items_per_room = 2
 
+    max_delta = 0.01
+
+    frame_cycle_duration = 1.5
+
     constants = {
         'window_title': window_title,
         'screen_width': screen_width,
@@ -59,6 +63,8 @@ def get_constants():
         'fov_radius': fov_radius,
         'max_monsters_per_room': max_monsters_per_room,
         'max_items_per_room': max_items_per_room,
+        'max_delta': max_delta,
+        'frame_cycle_duration': frame_cycle_duration,
     }
 
     return constants
@@ -67,17 +73,18 @@ def get_game_variables(constants):
     fighter_component = Fighter(hp=100, defense=1, power=2)
     inventory_component = Inventory(20)
     level_component = Level()
+    fcd = constants['frame_cycle_duration']
     equipment_component = Equipment()
-    player = Entity(0, 0, PLAYER, 'Player', blocks=True, render_order=RenderOrder.ACTOR, fighter=fighter_component, inventory=inventory_component, level=level_component, equipment=equipment_component)
+    player = Entity(0, 0, [PLAYER, PLAYER + 16], 'Player', fcd, blocks=True, render_order=RenderOrder.ACTOR, fighter=fighter_component, inventory=inventory_component, level=level_component, equipment=equipment_component)
     entities = [player]
 
     equippable_component = Equippable(EquipmentSlots.MAIN_HAND, power_bonus=2)
-    axe = Entity(0, 0, AXE, 'Axe', equippable=equippable_component)
+    axe = Entity(0, 0, [AXE], 'Axe', fcd, equippable=equippable_component)
     player.inventory.add_item(axe)
     player.equipment.toggle_equip(axe)
 
     game_map = GameMap(constants['map_width'], constants['map_height'])
-    game_map.make_map(constants['max_rooms'], constants['room_min_size'], constants['room_max_size'], constants['map_width'], constants['map_height'], player, entities)
+    game_map.make_map(constants['max_rooms'], constants['room_min_size'], constants['room_max_size'], constants['map_width'], constants['map_height'], player, entities, fcd)
 
     message_log = MessageLog(constants['message_x'], constants['message_width'], constants['message_height'])
 

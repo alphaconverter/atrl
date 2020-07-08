@@ -1,4 +1,5 @@
 import math
+import random
 import tcod as libtcod
 
 from render_functions import RenderOrder
@@ -8,10 +9,10 @@ class Entity:
     """
     A generic object to represent players, enemies, items, etc.
     """
-    def __init__(self, x, y, char, name, blocks=False, render_order=RenderOrder.CORPSE, fighter=None, ai=None, item=None, inventory=None, stairs=None, level=None, equipment=None, equippable=None):
+    def __init__(self, x, y, tiles, name, fcd, blocks=False, render_order=RenderOrder.CORPSE, fighter=None, ai=None, item=None, inventory=None, stairs=None, level=None, equipment=None, equippable=None):
         self.x = x
         self.y = y
-        self.char = char
+        self.tiles = tiles
         self.name = name
         self.blocks = blocks
         self.render_order = render_order
@@ -23,6 +24,9 @@ class Entity:
         self.level = level
         self.equipment = equipment
         self.equippable = equippable
+        self.fcd = fcd
+        self.idle_offset = random.uniform(0, fcd / 2)
+        self.current_frame = 0
 
         if self.fighter:
             self.fighter.owner = self
@@ -120,6 +124,17 @@ class Entity:
 
     def distance(self, x, y):
         return math.sqrt((x - self.x) ** 2 + (y - self.y) ** 2)
+
+    def get_tile(self, current_frame_time):
+        if len(self.tiles) == 1:
+            return self.tiles[0]
+
+        if current_frame_time > self.idle_offset and current_frame_time < self.idle_offset + self.fcd / 2:
+            self.current_frame = 1
+        else:
+            self.current_frame = 0
+
+        return self.tiles[self.current_frame]
 
 def get_blocking_entities_at_location(entities, destination_x, destination_y):
     for entity in entities:

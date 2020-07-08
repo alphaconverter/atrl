@@ -30,23 +30,30 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
     previous_game_state = game_state
     targeting_item = None
 
-    MAX_DELTA = 0.01
+    frame_cycle_duration = constants['frame_cycle_duration']
+    current_frame_time = 0
+
+    max_delta = constants['max_delta']
     last_tick = time.time()
     while not libtcod.console_is_window_closed():
         tick = time.time()
         delta = tick - last_tick
         last_tick = tick
 
+        current_frame_time += delta
+        if current_frame_time > frame_cycle_duration:
+            current_frame_time -= frame_cycle_duration
+
         if fov_recompute:
             recompute_fov(fov_map, player.x, player.y, constants['fov_radius'], constants['fov_light_walls'], constants['fov_algorithm'])
 
-        render_all(con,panel,entities, player, game_map, fov_map, message_log, constants['screen_width'], constants['screen_height'], constants['panel_height'], constants['panel_y'], mouse, game_state)
+        render_all(con,panel, entities, player, game_map, fov_map, message_log, constants['screen_width'], constants['screen_height'], constants['panel_height'], constants['panel_y'], mouse, game_state, current_frame_time)
         fov_recompute = False
 
         libtcod.console_flush()
 
-        if delta < MAX_DELTA:
-            time.sleep(MAX_DELTA - delta)
+        if delta < max_delta:
+            time.sleep(max_delta - delta)
 
         #NOTE: we may not be rescheduled *exactly* after (MAX_DELTA - delta) seconds, but we do not care :p
 
@@ -258,7 +265,7 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
 def main():
     constants = get_constants()
 
-    libtcod.console_set_custom_font('res/tiles.png', libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_CP437, 16, 24)
+    libtcod.console_set_custom_font('res/tiles.png', libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_CP437, 16, 28)
     libtcod.console_init_root(constants['screen_width'], constants['screen_height'], constants['window_title'], True)
 
     con = libtcod.console_new(constants['screen_width'], constants['screen_height'])
@@ -266,7 +273,7 @@ def main():
 
     # load tiles
     idx = 256
-    for y in range(16, 24):
+    for y in range(16, 28):
         libtcod.console_map_ascii_codes_to_font(idx, 16, 0, y)
         idx += 16
 
