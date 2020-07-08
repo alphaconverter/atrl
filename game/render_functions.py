@@ -26,9 +26,9 @@ def render_health(panel, x, y, name, value, maximum, good_color, ok_color, bad_c
 
     val_length = len(str(value))
 
-    if value / float(maximum) > 0.75:
+    if value / float(maximum) >= 0.75:
         color = good_color
-    elif value / float(maximum) > 0.25:
+    elif value / float(maximum) >= 0.25:
         color = ok_color
     else:
         color = bad_color
