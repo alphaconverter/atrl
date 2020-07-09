@@ -81,6 +81,11 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
                 tile = entity.tiles[0]
                 hit_entity = Entity(entity.x, entity.y, [tile + 32, tile], 'Annoyed ' + entity.name, frame_cycle_duration, blocks=False, render_order=RenderOrder.ACTOR_HIT)
                 effect_entities.append(hit_entity)
+            elif 'lightning_coords' in result:
+                coords = result['lightning_coords']
+                for x, y in coords:
+                    light_entity = Entity(x, y, [LIGHTN, LIGHTN_SPARK], 'Lightning', frame_cycle_duration, blocks=False, render_order=RenderOrder.ITEM)
+                    effect_entities.append(light_entity)
             else: # fire_entity
                 coords = result['explosion_coords']
                 for x, y in coords:
@@ -209,7 +214,7 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
         if fullscreen:
             libtcod.console_set_fullscreen(not libtcod.console_is_fullscreen())
 
-        effect_stack.extend([result for result in player_turn_results if ('damaged_entity' in result or 'explosion_coords' in result)])
+        effect_stack.extend([result for result in player_turn_results if 'damaged_entity' in result or 'explosion_coords' in result or 'lightning_coords' in result])
         for player_turn_result in player_turn_results:
             message = player_turn_result.get('message')
             dead_entity = player_turn_result.get('dead')

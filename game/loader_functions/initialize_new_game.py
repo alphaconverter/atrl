@@ -71,6 +71,7 @@ def get_constants():
         'max_delta': max_delta,
         'frame_cycle_duration': frame_cycle_duration,
         'effect_animation_duration': effect_animation_duration,
+        'debug': True,
     }
 
     return constants
@@ -89,10 +90,13 @@ def get_game_variables(constants):
     player.inventory.add_item(axe)
     player.equipment.toggle_equip(axe)
 
-    debug = False
+    debug = constants['debug']
     if debug:
         item_component = Item(use_function=cast_fireball, targeting=True, targeting_message=Message('Left-click a target tile for the fireball, or right-click to cancel.', libtcod.Color(134,167,237)), damage=25, radius=3)
-        item = Entity(4, 4, [FIRE_SCROLL], 'Fireball Scroll', fcd, render_order=RenderOrder.ITEM, item=item_component)
+        item = Entity(0, 0, [FIRE_SCROLL], 'Fireball Scroll', fcd, render_order=RenderOrder.ITEM, item=item_component)
+        player.inventory.add_item(item)
+        item_component = Item(use_function=cast_lightning, damage=40, maximum_range=5)
+        item = Entity(0, 0, [LIGHT_SCROLL], 'Lightning Scroll', fcd, render_order=RenderOrder.ITEM, item=item_component)
         player.inventory.add_item(item)
 
     game_map = GameMap(constants['map_width'], constants['map_height'])

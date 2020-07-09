@@ -1,5 +1,6 @@
 import tcod as libtcod
 import math
+import random
 
 from game_messages import Message
 from components.ai import ConfusedMonster
@@ -39,6 +40,9 @@ def cast_lightning(*args, **kwargs):
                 closest_distance = distance
 
     if target:
+        #NOTE: this can give coords outside FOV ... (maybe A*?)
+        coords = libtcod.los.bresenham((caster.x, caster.y), (target.x, target.y))[1:]
+        results.append({'lightning_coords': coords})
         results.append({'consumed': True, 'target': target, 'message': Message('A lighting bolt strikes the {0} with a loud thunder! The damage is {1}.'.format(target.name, damage))})
         results.extend(target.fighter.take_damage(damage))
     else:

@@ -17,4 +17,5 @@ LIGHT_SCROLL = 335
 HEART        = 259
 FIRE         = 326
 SPARK        = 332
-
+LIGHTN       = 324
+LIGHTN_SPARK = 310
