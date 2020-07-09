@@ -44,6 +44,9 @@ def get_constants():
 
     frame_cycle_duration = 1.5
 
+    effect_animation_duration = 0.25
+    assert(effect_animation_duration < frame_cycle_duration / 2)
+
     constants = {
         'window_title': window_title,
         'screen_width': screen_width,
@@ -65,6 +68,7 @@ def get_constants():
         'max_items_per_room': max_items_per_room,
         'max_delta': max_delta,
         'frame_cycle_duration': frame_cycle_duration,
+        'effect_animation_duration': effect_animation_duration,
     }
 
     return constants

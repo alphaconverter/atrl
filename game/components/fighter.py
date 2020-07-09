@@ -38,9 +38,9 @@ class Fighter:
         return self.base_defense + bonus
 
     def take_damage(self, amount):
-        results = []
-
         self.hp -= amount
+
+        results = [{'damaged_entity': self.owner}]
 
         if self.hp <= 0:
             results.append({'dead': self.owner, 'xp': self.xp})
