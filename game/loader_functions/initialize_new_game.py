@@ -3,15 +3,17 @@ import tcod as libtcod
 from components.fighter import Fighter
 from components.inventory import Inventory
 from components.level import Level
+from components.item import Item
 from components.equipment import Equipment
 from components.equippable import Equippable
 from entity import Entity
 from equipment_slots import EquipmentSlots
-from game_messages import MessageLog
+from game_messages import *
 from loader_functions.tiles import *
 from game_states import GameStates
 from map_objects.game_map import GameMap
 from render_functions import RenderOrder
+from item_functions import cast_lightning, heal, cast_fireball, cast_confuse
 
 def get_constants():
     window_title = 'ATRL: A Tiny RogueLike'
@@ -86,6 +88,12 @@ def get_game_variables(constants):
     axe = Entity(0, 0, [AXE], 'Axe', fcd, equippable=equippable_component)
     player.inventory.add_item(axe)
     player.equipment.toggle_equip(axe)
+
+    debug = False
+    if debug:
+        item_component = Item(use_function=cast_fireball, targeting=True, targeting_message=Message('Left-click a target tile for the fireball, or right-click to cancel.', libtcod.Color(134,167,237)), damage=25, radius=3)
+        item = Entity(4, 4, [FIRE_SCROLL], 'Fireball Scroll', fcd, render_order=RenderOrder.ITEM, item=item_component)
+        player.inventory.add_item(item)
 
     game_map = GameMap(constants['map_width'], constants['map_height'])
     game_map.make_map(constants['max_rooms'], constants['room_min_size'], constants['room_max_size'], constants['map_width'], constants['map_height'], player, entities, fcd)

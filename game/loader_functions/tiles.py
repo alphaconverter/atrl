@@ -15,4 +15,6 @@ CONF_SCROLL  = 333
 FIRE_SCROLL  = 334
 LIGHT_SCROLL = 335
 HEART        = 259
+FIRE         = 326
+SPARK        = 332
 

@@ -12,6 +12,7 @@ from game_states import GameStates
 from death_functions import kill_monster, kill_player
 from loader_functions.initialize_new_game import get_constants, get_game_variables
 from loader_functions.data_loaders import load_game, save_game
+from loader_functions.tiles import *
 from menus import main_menu, message_box
 from render_functions import render_all, RenderOrder
 from fov_functions import initialize_fov, recompute_fov
@@ -36,7 +37,7 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
     effect_stack = []
     effect_animation_duration = constants['effect_animation_duration']
     animation_active = False
-    hit_entities = []
+    effect_entities = []
 
     max_delta = constants['max_delta']
     last_tick = time.time()
@@ -52,7 +53,7 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
         if fov_recompute:
             recompute_fov(fov_map, player.x, player.y, constants['fov_radius'], constants['fov_light_walls'], constants['fov_algorithm'])
 
-        render_all(con, panel, entities + hit_entities, player, game_map, fov_map, message_log, constants['screen_width'], constants['screen_height'], constants['panel_height'], constants['panel_y'], mouse, game_state, current_frame_time)
+        render_all(con, panel, entities + effect_entities, player, game_map, fov_map, message_log, constants['screen_width'], constants['screen_height'], constants['panel_height'], constants['panel_y'], mouse, game_state, current_frame_time)
         fov_recompute = False
 
         libtcod.console_flush()
@@ -69,27 +70,36 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
         if not user_input and animation_active:
             animation_timer -= delta
             if animation_timer < 0:
-                hit_entities = []
+                effect_entities = []
                 animation_active = False
             continue
 
         if not user_input and len(effect_stack) > 0:
-            entity = effect_stack.pop(0)
-            tile = entity.tiles[0]
-            hit_entity = Entity(entity.x, entity.y, [tile + 32, tile], 'Annoyed ' + entity.name, frame_cycle_duration, blocks=False, render_order=RenderOrder.ACTOR_HIT)
+            result = effect_stack.pop(0)
+            if 'damaged_entity' in result:
+                entity = result['damaged_entity']
+                tile = entity.tiles[0]
+                hit_entity = Entity(entity.x, entity.y, [tile + 32, tile], 'Annoyed ' + entity.name, frame_cycle_duration, blocks=False, render_order=RenderOrder.ACTOR_HIT)
+                effect_entities.append(hit_entity)
+            else: # fire_entity
+                coords = result['explosion_coords']
+                for x, y in coords:
+                    fire_entity = Entity(x, y, [FIRE, SPARK], 'Fire', frame_cycle_duration, blocks=False, render_order=RenderOrder.ITEM)
+                    effect_entities.append(fire_entity)
 
-            hit_entity.anim_offset = current_frame_time + (effect_animation_duration / 2)
-            if hit_entity.anim_offset > frame_cycle_duration:
-                hit_entity.anim_offset -= frame_cycle_duration
+            for e in effect_entities:
+                e.is_effect = True
+                e.anim_offset = current_frame_time + (effect_animation_duration / 2)
+                if e.anim_offset > frame_cycle_duration:
+                    e.anim_offset -= frame_cycle_duration
 
-            hit_entities.append(hit_entity)
             animation_timer = effect_animation_duration
             animation_active = True
             continue
 
         if animation_active:
             effect_stack = []
-            hit_entities = []
+            effect_entities = []
             animation_active = False
 
         action = handle_keys(key, game_state)
@@ -121,9 +131,6 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
                 if target:
                     attack_results = player.fighter.attack(target)
                     player_turn_results.extend(attack_results)
-
-                    effect_stack.extend([result['damaged_entity'] for result in player_turn_results if 'damaged_entity' in result])
-
                 else:
                     player.move(dx, dy)
                     fov_recompute = True
@@ -185,7 +192,7 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
         if game_state == GameStates.TARGETING:
             if left_click:
                 target_x, target_y = left_click
-                item_use_results = player.inventory.use(targeting_item, entities=entities, fov_map=fov_map, target_x=target_x, target_y=target_y)
+                item_use_results = player.inventory.use(targeting_item, entities=entities, fov_map=fov_map, target_x=target_x, target_y=target_y, game_map=game_map)
                 player_turn_results.extend(item_use_results)
             elif right_click:
                 player_turn_results.append({'targeting_cancelled': True})
@@ -202,6 +209,7 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
         if fullscreen:
             libtcod.console_set_fullscreen(not libtcod.console_is_fullscreen())
 
+        effect_stack.extend([result for result in player_turn_results if ('damaged_entity' in result or 'explosion_coords' in result)])
         for player_turn_result in player_turn_results:
             message = player_turn_result.get('message')
             dead_entity = player_turn_result.get('dead')
@@ -275,7 +283,7 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
             for entity in entities:
                 if entity.ai:
                     enemy_turn_results = entity.ai.take_turn(player, fov_map, game_map, entities)
-                    effect_stack.extend([result['damaged_entity'] for result in enemy_turn_results if 'damaged_entity' in result])
+                    effect_stack.extend([result for result in enemy_turn_results if 'damaged_entity' in result])
 
                     for enemy_turn_result in enemy_turn_results:
                         message = enemy_turn_result.get('message')

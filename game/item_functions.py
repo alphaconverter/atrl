@@ -1,4 +1,5 @@
 import tcod as libtcod
+import math
 
 from game_messages import Message
 from components.ai import ConfusedMonster
@@ -52,6 +53,7 @@ def cast_fireball(*args, **kwargs):
     radius = kwargs.get('radius')
     target_x = kwargs.get('target_x')
     target_y = kwargs.get('target_y')
+    game_map = kwargs.get('game_map')
 
     results = []
 
@@ -60,6 +62,14 @@ def cast_fireball(*args, **kwargs):
         return results
 
     results.append({'consumed': True, 'message': Message('The fireball explodes, burning everything within {0} tiles!'.format(radius), libtcod.Color(242,166,94))})
+
+    coords = []
+    for x in range(target_x - radius, target_x + radius + 1):
+        for y in range(target_y - radius, target_y + radius + 1):
+            if math.sqrt((x - target_x) ** 2 + (y - target_y) ** 2) <= radius and not game_map.is_blocked(x, y):
+                coords.append((x,y))
+
+    results.append({'explosion_coords': coords})
 
     for entity in entities:
         if entity.distance(target_x, target_y) <= radius and entity.fighter:

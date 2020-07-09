@@ -25,6 +25,7 @@ class Entity:
         self.equipment = equipment
         self.equippable = equippable
         self.fcd = fcd
+        self.is_effect = False
         self.anim_offset = random.uniform(0, fcd / 2)
         self.current_frame = 0
 
@@ -132,8 +133,7 @@ class Entity:
         if current_frame_time > self.anim_offset and current_frame_time < self.anim_offset + self.fcd / 2:
             self.current_frame = 1
         else:
-            # that's a little bit hacky, but it avoids flickering: white -> normal -> white (we don't want the last)
-            if self.render_order != RenderOrder.ACTOR_HIT:
+            if not self.is_effect:
                 self.current_frame = 0
 
         return self.tiles[self.current_frame]
