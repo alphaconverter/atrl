@@ -70,7 +70,7 @@ def cast_fireball(*args, **kwargs):
     coords = []
     for x in range(target_x - radius, target_x + radius + 1):
         for y in range(target_y - radius, target_y + radius + 1):
-            if math.sqrt((x - target_x) ** 2 + (y - target_y) ** 2) <= radius and not game_map.is_blocked(x, y):
+            if 0 <= x < game_map.width and 0 <= y < game_map.height and math.sqrt((x - target_x) ** 2 + (y - target_y) ** 2) <= radius and not game_map.is_blocked(x, y):
                 coords.append((x,y))
 
     results.append({'explosion_coords': coords})
