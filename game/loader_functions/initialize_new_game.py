@@ -98,6 +98,9 @@ def get_game_variables(constants):
         item_component = Item(use_function=cast_lightning, damage=40, maximum_range=5)
         item = Entity(0, 0, [LIGHT_SCROLL], 'Lightning Scroll', fcd, render_order=RenderOrder.ITEM, item=item_component)
         player.inventory.add_item(item)
+        item_component = Item(use_function=cast_confuse, targeting=True, targeting_message=Message( 'Left-click an enemy to confuse it, or right-click to cancel.', libtcod.Color(134,167,237)))
+        item = Entity(0, 0, [CONF_SCROLL], 'Confusion Scroll', fcd, render_order=RenderOrder.ITEM, item=item_component)
+        player.inventory.add_item(item)
 
     game_map = GameMap(constants['map_width'], constants['map_height'])
     game_map.make_map(constants['max_rooms'], constants['room_min_size'], constants['room_max_size'], constants['map_width'], constants['map_height'], player, entities, fcd)

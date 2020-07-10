@@ -28,6 +28,7 @@ class Entity:
         self.is_effect = False
         self.anim_offset = random.uniform(0, fcd / 2)
         self.current_frame = 0
+        self.is_confused = False
 
         if self.fighter:
             self.fighter.owner = self

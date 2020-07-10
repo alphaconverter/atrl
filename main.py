@@ -78,14 +78,18 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
             result = effect_stack.pop(0)
             if 'damaged_entity' in result:
                 entity = result['damaged_entity']
-                tile = entity.tiles[0]
-                hit_entity = Entity(entity.x, entity.y, [tile + 32, tile], 'Annoyed ' + entity.name, frame_cycle_duration, blocks=False, render_order=RenderOrder.ACTOR_HIT)
+                tile = entity.tiles[0] - (32 if entity.is_confused else 0)
+                hit_entity = Entity(entity.x, entity.y, [tile + 64, tile], 'Annoyed ' + entity.name, frame_cycle_duration, blocks=False, render_order=RenderOrder.ACTOR_HIT)
                 effect_entities.append(hit_entity)
             elif 'lightning_coords' in result:
                 coords = result['lightning_coords']
                 for x, y in coords:
                     light_entity = Entity(x, y, [LIGHTN, LIGHTN_SPARK], 'Lightning', frame_cycle_duration, blocks=False, render_order=RenderOrder.ITEM)
                     effect_entities.append(light_entity)
+            elif 'confused_entity' in result:
+                entity = result['confused_entity']
+                confused_entity = Entity(entity.x, entity.y, [CONF_WHIRL, entity.tiles[0]], 'Confusion Whirl ', frame_cycle_duration, blocks=False, render_order=RenderOrder.ACTOR_HIT)
+                effect_entities.append(confused_entity)
             else: # fire_entity
                 coords = result['explosion_coords']
                 for x, y in coords:
@@ -214,7 +218,7 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
         if fullscreen:
             libtcod.console_set_fullscreen(not libtcod.console_is_fullscreen())
 
-        effect_stack.extend([result for result in player_turn_results if 'damaged_entity' in result or 'explosion_coords' in result or 'lightning_coords' in result])
+        effect_stack.extend([result for result in player_turn_results if 'damaged_entity' in result or 'explosion_coords' in result or 'lightning_coords' in result or 'confused_entity'in result])
         for player_turn_result in player_turn_results:
             message = player_turn_result.get('message')
             dead_entity = player_turn_result.get('dead')
@@ -315,7 +319,7 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
 def main():
     constants = get_constants()
 
-    libtcod.console_set_custom_font('res/tiles.png', libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_CP437, 16, 28)
+    libtcod.console_set_custom_font('res/tiles.png', libtcod.FONT_TYPE_GREYSCALE | libtcod.FONT_LAYOUT_CP437, 16, 24)
     libtcod.console_init_root(constants['screen_width'], constants['screen_height'], constants['window_title'], True)
 
     con = libtcod.console_new(constants['screen_width'], constants['screen_height'])
@@ -323,7 +327,7 @@ def main():
 
     # load tiles
     idx = 256
-    for y in range(16, 28):
+    for y in range(16, 24):
         libtcod.console_map_ascii_codes_to_font(idx, 16, 0, y)
         idx += 16
 

@@ -51,15 +51,15 @@ def render_all(con, panel, entities, player, game_map, fov_map, message_log, scr
 
             if visible:
                 if wall:
-                    libtcod.console_put_char(con, x, y, WALL, libtcod.BKGND_NONE)
+                    libtcod.console_put_char(con, x, y, WALL_LIGHT, libtcod.BKGND_NONE)
                 else:
-                    libtcod.console_put_char(con, x, y, FLOOR, libtcod.BKGND_NONE)
+                    libtcod.console_put_char(con, x, y, FLOOR_LIGHT, libtcod.BKGND_NONE)
                 game_map.tiles[x][y].explored = True
             elif game_map.tiles[x][y].explored:
                 if wall:
-                    libtcod.console_put_char(con, x, y, WALL + 80, libtcod.BKGND_NONE)
+                    libtcod.console_put_char(con, x, y, WALL_DARK, libtcod.BKGND_NONE)
                 else:
-                    libtcod.console_put_char(con, x, y, FLOOR + 80, libtcod.BKGND_NONE)
+                    libtcod.console_put_char(con, x, y, FLOOR_DARK, libtcod.BKGND_NONE)
 
     # Draw all entities in the list
     entities_in_render_order = sorted(entities, key=lambda x: x.render_order.value)

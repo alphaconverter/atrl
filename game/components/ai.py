@@ -38,6 +38,8 @@ class ConfusedMonster:
             self.number_of_turns -= 1
         else:
             self.owner.ai = self.previous_ai
+            self.owner.tiles = [t - 32 for t in self.owner.tiles]
+            self.owner.is_confused = False
             results.append({'message': Message('The {0} is no longer confused!'.format(self.owner.name), libtcod.Color(235,86,75))})
 
         return results

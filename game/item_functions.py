@@ -100,7 +100,10 @@ def cast_confuse(*args, **kwargs):
 
             confused_ai.owner = entity
             entity.ai = confused_ai
+            entity.is_confused = True
+            entity.tiles = [t + 32 for t in entity.tiles]
 
+            results.append({'confused_entity': entity})
             results.append({'consumed': True, 'message': Message('The eyes of the {0} look vacant, as he starts to stumble around!'.format(entity.name), libtcod.Color(93,222,135))})
             break
     else:
