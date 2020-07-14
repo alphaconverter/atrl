@@ -1,6 +1,11 @@
+import os
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = 'hide'
+
 import tcod as libtcod
+import pygame as pg
 import warnings
 import sys
+import random
 import time
 
 sys.path.append('game')
@@ -38,6 +43,14 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
     effect_animation_duration = constants['effect_animation_duration']
     animation_active = False
     effect_entities = []
+
+    #NOTE: normally, 44100 is used; if buffer is too small, ALSA throws errors: "ALSA lib pcm.c:8526:(snd_pcm_recover) underrun occurred", but seems to work with 22050
+    pg.mixer.init(22050, -16, 2, 256)
+    snds = {'hit': []}
+    for name in ['zap', 'death', 'fireball', 'move', 'pickup', 'confuse', 'drop', 'levelup', 'heal']:
+        snds[name] = pg.mixer.Sound('res/snd/{}.wav'.format(name))
+    for i in range(3):
+        snds['hit'].append(pg.mixer.Sound('res/snd/hit{}.wav'.format(i)))
 
     max_delta = constants['max_delta']
     last_tick = time.time()
@@ -81,20 +94,26 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
                 tile = entity.tiles[0] - (32 if entity.is_confused else 0)
                 hit_entity = Entity(entity.x, entity.y, [tile + 64, tile], 'Annoyed ' + entity.name, frame_cycle_duration, blocks=False, render_order=RenderOrder.ACTOR_HIT)
                 effect_entities.append(hit_entity)
+                random.choice(snds['hit']).play()
             elif 'lightning_coords' in result:
                 coords = result['lightning_coords']
                 for x, y in coords:
                     light_entity = Entity(x, y, [LIGHTN, LIGHTN_SPARK], 'Lightning', frame_cycle_duration, blocks=False, render_order=RenderOrder.ITEM)
                     effect_entities.append(light_entity)
+                snds['zap'].play()
             elif 'confused_entity' in result:
                 entity = result['confused_entity']
                 confused_entity = Entity(entity.x, entity.y, [CONF_WHIRL, entity.tiles[0]], 'Confusion Whirl ', frame_cycle_duration, blocks=False, render_order=RenderOrder.ACTOR_HIT)
                 effect_entities.append(confused_entity)
+                snds['confuse'].play()
+            elif 'dead' in result:
+                snds['death'].play()
             else: # fire_entity
                 coords = result['explosion_coords']
                 for x, y in coords:
                     fire_entity = Entity(x, y, [FIRE, SPARK], 'Fire', frame_cycle_duration, blocks=False, render_order=RenderOrder.ITEM)
                     effect_entities.append(fire_entity)
+                snds['fireball'].play()
 
             for e in effect_entities:
                 e.is_effect = True
@@ -142,17 +161,20 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
                     player_turn_results.extend(attack_results)
                 else:
                     player.move(dx, dy)
+                    snds['move'].play()
                     fov_recompute = True
 
                 game_state = GameStates.ENEMY_TURN
         elif wait:
             game_state = GameStates.ENEMY_TURN
+            snds['move'].play()
 
         elif pickup and game_state == GameStates.PLAYERS_TURN:
             for entity in entities:
                 if entity.item and entity.x == player.x and entity.y == player.y:
                     pickup_results = player.inventory.add_item(entity)
                     player_turn_results.extend(pickup_results)
+                    snds['pickup'].play()
                     break
             else:
                 message_log.add_message(Message('There is nothing here to pick up.', libtcod.Color(255, 228, 120)))
@@ -171,6 +193,7 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
                 player_turn_results.extend(player.inventory.use(item, entities=entities, fov_map=fov_map))
             elif game_state == GameStates.DROP_INVENTORY:
                 player_turn_results.extend(player.inventory.drop_item(item))
+                snds['drop'].play()
 
         if take_stairs and game_state == GameStates.PLAYERS_TURN:
             for entity in entities:
@@ -218,7 +241,7 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
         if fullscreen:
             libtcod.console_set_fullscreen(not libtcod.console_is_fullscreen())
 
-        effect_stack.extend([result for result in player_turn_results if 'damaged_entity' in result or 'explosion_coords' in result or 'lightning_coords' in result or 'confused_entity'in result])
+        effect_stack.extend([result for result in player_turn_results if 'damaged_entity' in result or 'explosion_coords' in result or 'lightning_coords' in result or 'confused_entity'in result or 'dead' in result])
         for player_turn_result in player_turn_results:
             message = player_turn_result.get('message')
             dead_entity = player_turn_result.get('dead')
@@ -231,6 +254,9 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
             xp = player_turn_result.get('xp')
 
             if message:
+                #NOTE: hacky ... :D
+                if 'feel better' in message.text:
+                    snds['heal'].play()
                 message_log.add_message(message)
 
             if targeting_cancelled:
@@ -245,6 +271,7 @@ def play_game(player, entities, game_map, message_log, game_state, con, panel, c
                     message_log.add_message(Message('Your battle skills grow stronger! You reached level {0}'.format(player.level.current_level) + '!', libtcod.Color(255, 228, 120)))
                     previous_game_state = game_state
                     game_state = GameStates.LEVEL_UP
+                    snds['levelup'].play()
 
             if dead_entity:
                 if dead_entity == player:
