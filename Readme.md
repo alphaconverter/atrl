@@ -13,7 +13,7 @@ following command:
 
 Your goal is to go to dungeon floor 8, find the famous "Amulet of Oderny" and
 return it to the surface. Tiles are taken and modified from Kenney's excellent
-[microrogue tileset](https://kenney.nl/assets/micro-roguelike) and sound effect
+[Micro Roguelike tileset](https://kenney.nl/assets/micro-roguelike) and sound effect
 are made clicking rantomly in [Leshy SFMaker](https://www.leshylabs.com/apps/sfMaker/).
 
 # License
